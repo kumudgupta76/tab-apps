@@ -59,12 +59,14 @@ function TodoPreview() {
   )
 }
 
-const PREVIEWS: Record<AppId, () => JSX.Element> = { timer: TimerPreview, calendar: CalendarPreview, todo: TodoPreview }
+const PREVIEWS: Partial<Record<AppId, () => JSX.Element>> = { timer: TimerPreview, calendar: CalendarPreview, todo: TodoPreview }
+const CARD_APPS = APPS.filter((a) => PREVIEWS[a.id])
 
 export function Launcher({ onOpen, dimmed, theme }: { onOpen: (id: AppId, o: Origin) => void; dimmed: boolean; theme: Theme }) {
   const now = new Date(useNow(1000))
   const { isFullscreen, toggle, supported } = useFullscreen()
   const themeMode = useData((s) => s.themeMode)
+  const showSeconds = useData((s) => s.showSeconds)
 
   return (
     <motion.main
@@ -79,7 +81,15 @@ export function Launcher({ onOpen, dimmed, theme }: { onOpen: (id: AppId, o: Ori
             <p className="text-xl text-muted">
               {greeting(now.getHours())} · {format(now, 'EEEE, d MMMM')}
             </p>
-            <RollingText text={format(now, 'HH:mm')} className="text-gradient text-[clamp(5rem,14vmin,10rem)] font-extralight leading-none tracking-tight" />
+            <motion.button
+              whileTap={{ scale: 0.96 }}
+              onClick={(e) => onOpen('clock', { x: e.clientX, y: e.clientY })}
+              className="flex items-baseline text-left"
+              aria-label="Open full-screen clock"
+            >
+              <RollingText text={format(now, 'HH:mm')} className="text-gradient text-[clamp(5rem,14vmin,10rem)] font-extralight leading-none tracking-tight" />
+              {showSeconds && <RollingText text={format(now, 'ss')} className="ml-2 text-[clamp(2rem,6vmin,4.5rem)] font-extralight leading-none text-muted" />}
+            </motion.button>
           </motion.div>
           <div className="flex gap-3">
             <motion.button
@@ -102,8 +112,8 @@ export function Launcher({ onOpen, dimmed, theme }: { onOpen: (id: AppId, o: Ori
         </header>
 
         <div className="mt-8 grid flex-1 grid-cols-2 gap-6 landscape:grid-cols-3">
-          {APPS.map((app, i) => {
-            const Preview = PREVIEWS[app.id]
+          {CARD_APPS.map((app, i) => {
+            const Preview = PREVIEWS[app.id]!
             const Icon = app.icon
             return (
               <motion.button

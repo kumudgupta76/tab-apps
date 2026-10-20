@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware'
 
 export const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
 
-export type AppId = 'timer' | 'calendar' | 'todo'
+export type AppId = 'clock' | 'timer' | 'calendar' | 'todo'
 
 export interface Todo { id: string; text: string; done: boolean; listId: string }
 export interface TodoList { id: string; name: string; emoji: string }
@@ -13,10 +13,12 @@ export const EVENT_COLORS = ['rgb(var(--accent))', 'rgb(var(--accent2))', '#f43f
 
 interface DataState {
   themeMode: string // 'daily' or a theme id
+  showSeconds: boolean
   lists: TodoList[]
   todos: Todo[]
   events: CalEvent[]
   setThemeMode: (m: string) => void
+  setShowSeconds: (v: boolean) => void
   addList: (name: string, emoji: string) => string
   removeList: (id: string) => void
   addTodo: (listId: string, text: string) => void
@@ -32,6 +34,7 @@ export const useData = create<DataState>()(
   persist(
     (set) => ({
       themeMode: 'daily',
+      showSeconds: true,
       lists: [
         { id: 'today', name: 'Today', emoji: '☀️' },
         { id: 'home', name: 'Home', emoji: '🏠' },
@@ -39,6 +42,7 @@ export const useData = create<DataState>()(
       todos: [],
       events: [],
       setThemeMode: (themeMode) => set({ themeMode }),
+      setShowSeconds: (showSeconds) => set({ showSeconds }),
       addList: (name, emoji) => {
         const id = uid()
         set((s) => ({ lists: [...s.lists, { id, name, emoji }] }))
