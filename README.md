@@ -1,6 +1,10 @@
 # TabDesk
 
-Full-screen, animated tablet tools: **Timer** (countdown / stopwatch / pomodoro), **Calendar** and **To-do**, with a new theme every day.
+Full-screen, animated tablet tools: **Clock** (default view), **Timer** (countdown / stopwatch / pomodoro), **Calendar** and **To-do**, with a new theme every day.
+
+- Swipe left/right (or ←/→ keys, or tap the page dots) to switch views; Esc or the home button opens the launcher.
+- Battery indicator in the header (Chromium browsers only; hidden where the Battery API is unavailable, e.g. iOS Safari/Firefox).
+- Responsive from phones (portrait and landscape) up to tablets.
 
 ## Run
 
@@ -32,4 +36,4 @@ React 18 + TypeScript + Vite · Framer Motion · Tailwind CSS · Zustand (persis
 
 - `src/lib/themes.ts` – theme list and `themeForDate` (daily rotation). Add a theme by appending to `THEMES`.
 - `src/apps/registry.ts` – tool registry. Add a new tool by adding an entry here.
-- `src/components` – launcher, app shell (circular reveal + dock), theme picker, animated background.
+- `src/components` – launcher, app shell (circular reveal + swipe navigation), battery indicator, theme picker, animated background.

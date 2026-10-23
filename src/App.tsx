@@ -16,7 +16,7 @@ export default function App() {
   useWakeLock()
   useTimerTicker()
 
-  const [open, setOpen] = useState<{ id: AppId; origin: Origin } | null>(null)
+  const [open, setOpen] = useState<{ id: AppId; origin: Origin } | null>(() => ({ id: 'clock', origin: center() }))
   const close = useCallback(() => setOpen(null), [])
   const show = (id: AppId) => setOpen((o) => ({ id, origin: o?.origin ?? center() }))
 
@@ -25,7 +25,7 @@ export default function App() {
       <div className="fixed inset-0 overflow-hidden text-fg">
         <AnimatedBackground theme={theme} />
         <Launcher theme={theme} dimmed={!!open} onOpen={(id, origin) => setOpen({ id, origin })} />
-        <AnimatePresence>{open && <AppShell key="shell" id={open.id} origin={open.origin} onClose={close} onSwitch={show} />}</AnimatePresence>
+        <AnimatePresence initial={false}>{open && <AppShell key="shell" id={open.id} origin={open.origin} onClose={close} onSwitch={show} />}</AnimatePresence>
         <ThemePicker />
         <Toast onTap={() => show('timer')} />
       </div>

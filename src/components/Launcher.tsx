@@ -8,6 +8,7 @@ import { isStandalone, useFullscreen, useNow } from '../lib/hooks'
 import type { Theme } from '../lib/themes'
 import { durationOf, elapsedOf, formatMs, POMO, useTimer } from '../lib/timer'
 import { RollingText } from './RollingText'
+import { BatteryIndicator } from './Battery'
 
 export type Origin = { x: number; y: number }
 
@@ -27,8 +28,8 @@ function TimerPreview() {
     s.status === 'idle' ? 'Ready' : s.status === 'done' ? "Time's up!" : s.status === 'paused' ? 'Paused' : s.mode === 'pomodoro' ? POMO[s.phase].label : 'Running'
   return (
     <>
-      <RollingText text={formatMs(shown)} className="text-6xl font-light" />
-      <p className="mt-2 text-lg text-muted">
+      <RollingText text={formatMs(shown)} className="text-5xl font-light sm:text-6xl" />
+      <p className="mt-2 text-[1rem] text-muted sm:text-lg">
         {label} · {s.mode}
       </p>
     </>
@@ -40,8 +41,8 @@ function CalendarPreview() {
   const today = events.filter((e) => isToday(new Date(e.date + 'T00:00'))).sort((a, b) => a.time.localeCompare(b.time))
   return (
     <>
-      <div className="text-6xl font-light">{format(new Date(), 'd MMM')}</div>
-      <p className="mt-2 truncate text-lg text-muted">
+      <div className="text-5xl font-light sm:text-6xl">{format(new Date(), 'd MMM')}</div>
+      <p className="mt-2 truncate text-[1rem] text-muted sm:text-lg">
         {today.length ? `${today.length} today · next: ${today[0].time} ${today[0].title}` : 'Nothing planned today'}
       </p>
     </>
@@ -53,8 +54,8 @@ function TodoPreview() {
   const open = todos.filter((t) => !t.done)
   return (
     <>
-      <div className="text-6xl font-light">{open.length}</div>
-      <p className="mt-2 truncate text-lg text-muted">{open.length ? open.slice(0, 2).map((t) => t.text).join(' · ') : 'All clear ✨'}</p>
+      <div className="text-5xl font-light sm:text-6xl">{open.length}</div>
+      <p className="mt-2 truncate text-[1rem] text-muted sm:text-lg">{open.length ? open.slice(0, 2).map((t) => t.text).join(' · ') : 'All clear ✨'}</p>
     </>
   )
 }
@@ -75,10 +76,10 @@ export function Launcher({ onOpen, dimmed, theme }: { onOpen: (id: AppId, o: Ori
       transition={{ duration: 0.5, ease: [0.65, 0, 0.35, 1] }}
       style={{ pointerEvents: dimmed ? 'none' : 'auto' }}
     >
-      <div className="flex flex-1 flex-col px-8 pb-8 pt-8 landscape:px-12">
-        <header className="flex items-start justify-between gap-4">
-          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
-            <p className="text-xl text-muted">
+      <div className="no-scrollbar flex flex-1 flex-col overflow-y-auto px-4 pb-6 pt-4 sm:px-8 sm:pb-8 sm:pt-8 landscape:sm:px-12">
+        <header className="flex items-start justify-between gap-3 sm:gap-4">
+          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="min-w-0">
+            <p className="truncate text-[1rem] text-muted sm:text-xl">
               {greeting(now.getHours())} · {format(now, 'EEEE, d MMMM')}
             </p>
             <motion.button
@@ -87,31 +88,33 @@ export function Launcher({ onOpen, dimmed, theme }: { onOpen: (id: AppId, o: Ori
               className="flex items-baseline text-left"
               aria-label="Open full-screen clock"
             >
-              <RollingText text={format(now, 'HH:mm')} className="text-gradient text-[clamp(5rem,14vmin,10rem)] font-extralight leading-none tracking-tight" />
-              {showSeconds && <RollingText text={format(now, 'ss')} className="ml-2 text-[clamp(2rem,6vmin,4.5rem)] font-extralight leading-none text-muted" />}
+              <RollingText text={format(now, 'HH:mm')} className="text-gradient text-[clamp(3.5rem,14vmin,10rem)] font-extralight leading-none tracking-tight" />
+              {showSeconds && <RollingText text={format(now, 'ss')} className="ml-2 text-[clamp(1.5rem,6vmin,4.5rem)] font-extralight leading-none text-muted" />}
             </motion.button>
           </motion.div>
-          <div className="flex gap-3">
+          <div className="flex shrink-0 gap-2 sm:gap-3">
+            <BatteryIndicator />
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={() => useUi.getState().setThemePicker(true)}
-              className="glass flex h-14 items-center gap-2 rounded-full px-5 text-lg"
+              className="glass flex h-11 min-w-11 items-center justify-center gap-2 rounded-full px-3 text-lg sm:h-14 sm:px-5"
+              aria-label="Themes"
             >
               <Palette size={22} />
-              <span className="hidden sm:inline">
+              <span className="hidden md:inline">
                 {theme.emoji} {theme.name}
                 {themeMode === 'daily' && <span className="text-muted"> · today</span>}
               </span>
             </motion.button>
             {supported && (
-              <motion.button whileTap={{ scale: 0.9 }} onClick={toggle} className="glass grid h-14 w-14 place-items-center rounded-full" aria-label="Toggle full screen">
+              <motion.button whileTap={{ scale: 0.9 }} onClick={toggle} className="glass hidden h-14 w-14 place-items-center rounded-full sm:grid" aria-label="Toggle full screen">
                 {isFullscreen ? <Minimize size={22} /> : <Maximize size={22} />}
               </motion.button>
             )}
           </div>
         </header>
 
-        <div className="mt-8 grid flex-1 grid-cols-2 gap-6 landscape:grid-cols-3">
+        <div className="mt-5 grid flex-1 grid-cols-1 gap-4 sm:mt-8 sm:grid-cols-2 sm:gap-6 landscape:grid-cols-3">
           {CARD_APPS.map((app, i) => {
             const Preview = PREVIEWS[app.id]!
             const Icon = app.icon
@@ -123,8 +126,8 @@ export function Launcher({ onOpen, dimmed, theme }: { onOpen: (id: AppId, o: Ori
                 transition={{ delay: 0.1 + i * 0.08, type: 'spring', stiffness: 200, damping: 22 }}
                 whileTap={{ scale: 0.96 }}
                 onClick={(e) => onOpen(app.id, { x: e.clientX, y: e.clientY })}
-                className={`glass group relative flex min-h-[12rem] flex-col justify-between overflow-hidden rounded-[2.5rem] p-8 text-left ${
-                  i === 0 ? 'col-span-2 landscape:col-span-1' : ''
+                className={`glass group relative flex min-h-[9rem] flex-col justify-between overflow-hidden rounded-[2rem] p-5 text-left sm:min-h-[12rem] sm:rounded-[2.5rem] sm:p-8 ${
+                  i === 0 ? 'sm:col-span-2 landscape:col-span-1' : ''
                 }`}
               >
                 <motion.div
@@ -133,13 +136,13 @@ export function Launcher({ onOpen, dimmed, theme }: { onOpen: (id: AppId, o: Ori
                   animate={{ scale: [1, 1.2, 1], rotate: [0, 30, 0] }}
                   transition={{ duration: 6 + i, repeat: Infinity }}
                 />
-                <div className="flex items-center gap-4">
-                  <span className="btn-accent grid h-16 w-16 place-items-center rounded-2xl shadow-lg">
-                    <Icon size={32} />
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <span className="btn-accent grid h-12 w-12 place-items-center rounded-2xl shadow-lg sm:h-16 sm:w-16">
+                    <Icon className="h-6 w-6 sm:h-8 sm:w-8" />
                   </span>
-                  <span className="text-3xl font-semibold">{app.name}</span>
+                  <span className="text-2xl font-semibold sm:text-3xl">{app.name}</span>
                 </div>
-                <div className="relative mt-6 min-w-0">
+                <div className="relative mt-4 min-w-0 sm:mt-6">
                   <Preview />
                 </div>
               </motion.button>
@@ -148,7 +151,7 @@ export function Launcher({ onOpen, dimmed, theme }: { onOpen: (id: AppId, o: Ori
         </div>
 
         {!isStandalone() && (
-          <p className="mt-6 text-center text-muted">Tip: use “Add to Home Screen” / “Install app” for true full-screen mode.</p>
+          <p className="mt-6 hidden text-center text-muted sm:block">Tip: use “Add to Home Screen” / “Install app” for true full-screen mode.</p>
         )}
       </div>
     </motion.main>

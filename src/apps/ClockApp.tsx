@@ -21,12 +21,12 @@ export default function ClockApp() {
         <RollingText
           text={format(now, 'HH:mm')}
           className={`text-gradient font-extralight leading-none tracking-tight transition-[font-size] duration-500 ${
-            showSeconds ? 'text-[min(19vw,40vh)]' : 'text-[min(28vw,52vh)]'
+            showSeconds ? 'text-[min(30vw,40vh)]' : 'text-[min(38vw,52vh)]'
           }`}
         />
         {showSeconds && (
           <motion.span initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="ml-[1vw]">
-            <RollingText text={format(now, 'ss')} className="text-[min(9vw,18vh)] font-extralight leading-none text-muted" />
+            <RollingText text={format(now, 'ss')} className="text-[min(13vw,18vh)] font-extralight leading-none text-muted" />
           </motion.span>
         )}
       </motion.div>

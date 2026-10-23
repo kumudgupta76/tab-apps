@@ -43,7 +43,7 @@ function Row({ todo, onToggle, onRemove, onGrip }: { todo: Todo; onToggle: () =>
   }
 
   return (
-    <div className="relative overflow-hidden rounded-3xl">
+    <div className="relative overflow-hidden rounded-3xl" data-noswipe>
       <motion.div style={{ opacity: doneOpacity }} className="absolute inset-0 flex items-center bg-emerald-500 pl-7 text-white">
         <Check size={28} />
       </motion.div>
@@ -143,8 +143,8 @@ export default function TodoApp() {
   }
 
   return (
-    <div className="mx-auto flex h-full max-w-3xl flex-col gap-5 px-6 py-4">
-      <div className="no-scrollbar -mx-2 flex shrink-0 items-center gap-3 overflow-x-auto px-2 py-1">
+    <div className="mx-auto flex h-full max-w-3xl flex-col gap-4 px-3 py-2 sm:gap-5 sm:px-6 sm:py-4">
+      <div className="no-scrollbar -mx-2 flex shrink-0 items-center gap-3 overflow-x-auto px-2 py-1" data-noswipe>
         {lists.map((l) => {
           const count = todos.filter((t) => t.listId === l.id && !t.done).length
           const sel = l.id === listId

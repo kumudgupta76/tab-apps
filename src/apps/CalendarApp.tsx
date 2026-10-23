@@ -59,10 +59,10 @@ export default function CalendarApp() {
   }
 
   return (
-    <div className="flex h-full flex-col gap-5 px-6 py-4 landscape:flex-row">
-      <section className="glass flex min-h-0 flex-[3] flex-col rounded-[2rem] p-6">
-        <div className="mb-4 flex items-center justify-between">
-          <div className="relative h-12 flex-1 overflow-hidden">
+    <div className="no-scrollbar flex h-full flex-col gap-4 overflow-y-auto px-3 py-2 sm:gap-5 sm:px-6 sm:py-4 lg:landscape:flex-row">
+      <section className="glass flex min-h-[21rem] flex-[3] flex-col rounded-[2rem] p-4 sm:p-6">
+        <div className="mb-3 flex items-center justify-between gap-2 sm:mb-4">
+          <div className="relative h-9 min-w-0 flex-1 overflow-hidden sm:h-12">
             <AnimatePresence initial={false} custom={dir}>
               <motion.h2
                 key={month.toISOString()}
@@ -71,32 +71,32 @@ export default function CalendarApp() {
                 initial="enter"
                 animate="center"
                 exit="exit"
-                className="absolute text-4xl font-semibold"
+                className="absolute whitespace-nowrap text-2xl font-semibold sm:text-4xl"
               >
                 {format(month, 'MMMM')} <span className="font-light text-muted">{format(month, 'yyyy')}</span>
               </motion.h2>
             </AnimatePresence>
           </div>
-          <div className="flex gap-2">
-            <motion.button whileTap={{ scale: 0.9 }} onClick={goToday} className="glass rounded-full px-5 py-3 text-lg">
+          <div className="flex shrink-0 gap-1.5 sm:gap-2">
+            <motion.button whileTap={{ scale: 0.9 }} onClick={goToday} className="glass rounded-full px-3 py-2 text-[1rem] sm:px-5 sm:py-3 sm:text-lg">
               Today
             </motion.button>
-            <motion.button whileTap={{ scale: 0.9 }} onClick={() => go(-1)} className="glass grid h-12 w-12 place-items-center rounded-full" aria-label="Previous month">
+            <motion.button whileTap={{ scale: 0.9 }} onClick={() => go(-1)} className="glass grid h-10 w-10 place-items-center rounded-full sm:h-12 sm:w-12" aria-label="Previous month">
               <ChevronLeft />
             </motion.button>
-            <motion.button whileTap={{ scale: 0.9 }} onClick={() => go(1)} className="glass grid h-12 w-12 place-items-center rounded-full" aria-label="Next month">
+            <motion.button whileTap={{ scale: 0.9 }} onClick={() => go(1)} className="glass grid h-10 w-10 place-items-center rounded-full sm:h-12 sm:w-12" aria-label="Next month">
               <ChevronRight />
             </motion.button>
           </div>
         </div>
 
-        <div className="mb-2 grid grid-cols-7 text-center text-sm uppercase tracking-widest text-muted">
+        <div className="mb-2 grid grid-cols-7 text-center text-xs uppercase tracking-wider text-muted sm:text-sm sm:tracking-widest">
           {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => (
             <span key={d}>{d}</span>
           ))}
         </div>
 
-        <div className="relative min-h-0 flex-1 overflow-hidden">
+        <div className="relative min-h-0 flex-1 overflow-hidden" data-noswipe>
           <AnimatePresence initial={false} custom={dir}>
             <motion.div
               key={month.toISOString()}
@@ -142,7 +142,7 @@ export default function CalendarApp() {
         </div>
       </section>
 
-      <section className="glass flex min-h-0 flex-[2] flex-col rounded-[2rem] p-6">
+      <section className="glass flex min-h-[22rem] flex-[2] flex-col rounded-[2rem] p-4 sm:p-6">
         <AnimatePresence mode="wait">
           <motion.div key={key(selected)} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="mb-4">
             <p className="text-lg text-muted">{isToday(selected) ? 'Today' : format(selected, 'EEEE')}</p>
@@ -183,9 +183,9 @@ export default function CalendarApp() {
 
         <form onSubmit={submit} className="mt-4 flex flex-col gap-3">
           <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="New event…" className="field" />
-          <div className="flex items-center gap-3">
-            <input type="time" value={time} onChange={(e) => setTime(e.target.value)} className="field w-36 py-3" />
-            <div className="flex flex-1 gap-2">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <input type="time" value={time} onChange={(e) => setTime(e.target.value)} className="field w-28 shrink-0 px-3 py-3 sm:w-36 sm:px-5" />
+            <div className="flex min-w-0 flex-1 justify-center gap-1.5 sm:justify-start sm:gap-2">
               {EVENT_COLORS.map((c, i) => (
                 <motion.button
                   type="button"
@@ -193,13 +193,13 @@ export default function CalendarApp() {
                   whileTap={{ scale: 0.8 }}
                   animate={{ scale: color === i ? 1.2 : 1 }}
                   onClick={() => setColor(i)}
-                  className={`h-8 w-8 rounded-full ${color === i ? 'ring-2 ring-fg ring-offset-2 ring-offset-transparent' : ''}`}
+                  className={`h-6 w-6 shrink-0 rounded-full sm:h-8 sm:w-8 ${color === i ? 'ring-2 ring-fg ring-offset-2 ring-offset-transparent' : ''}`}
                   style={{ background: c }}
                   aria-label={`Color ${i + 1}`}
                 />
               ))}
             </div>
-            <motion.button whileTap={{ scale: 0.9 }} type="submit" className="btn-accent grid h-14 w-14 place-items-center rounded-full" aria-label="Add event">
+            <motion.button whileTap={{ scale: 0.9 }} type="submit" className="btn-accent grid h-12 w-12 shrink-0 place-items-center rounded-full sm:h-14 sm:w-14" aria-label="Add event">
               <Plus />
             </motion.button>
           </div>

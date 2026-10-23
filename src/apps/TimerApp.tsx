@@ -51,11 +51,11 @@ export default function TimerApp() {
   }
 
   return (
-    <div className="flex h-full flex-col items-center gap-4 overflow-y-auto px-6 py-4 landscape:flex-row landscape:justify-center landscape:gap-16">
-      <div className="flex flex-col items-center gap-6">
+    <div className="flex h-full flex-col items-center gap-4 overflow-y-auto px-3 py-2 sm:px-6 sm:py-4 landscape:flex-row landscape:justify-center landscape:gap-8 lg:landscape:gap-16">
+      <div className="flex flex-col items-center gap-6 [@media(max-height:500px)]:gap-3">
         <div className="glass relative flex rounded-full p-1.5">
           {MODES.map((m) => (
-            <button key={m.id} onClick={() => s.setMode(m.id)} className={`relative isolate rounded-full px-6 py-3 text-lg transition-colors ${s.mode === m.id ? 'text-onaccent' : ''}`}>
+            <button key={m.id} onClick={() => s.setMode(m.id)} className={`relative isolate rounded-full px-4 py-2.5 text-[1rem] transition-colors sm:px-6 sm:py-3 sm:text-lg ${s.mode === m.id ? 'text-onaccent' : ''}`}>
               {s.mode === m.id && <motion.span layoutId="mode-pill" className="btn-accent absolute inset-0 -z-10 rounded-full" transition={{ type: 'spring', stiffness: 400, damping: 30 }} />}
               {m.label}
             </button>
@@ -63,7 +63,7 @@ export default function TimerApp() {
         </div>
 
         <motion.div
-          className="relative aspect-square w-[min(60vh,78vw)] landscape:w-[min(62vh,45vw)]"
+          className="relative aspect-square w-[min(60vh,78vw)] landscape:w-[min(62vh,45vw)] [@media(max-height:500px)]:w-[min(54vh,45vw)]"
           animate={done ? { scale: [1, 1.04, 1] } : { scale: 1 }}
           transition={done ? { repeat: Infinity, duration: 0.9 } : {}}
         >
@@ -116,7 +116,7 @@ export default function TimerApp() {
 
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <AnimatePresence mode="wait">
-              <motion.p key={done ? 'done' : s.mode === 'pomodoro' ? s.phase : s.mode} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="mb-2 text-xl uppercase tracking-[0.3em] text-muted">
+              <motion.p key={done ? 'done' : s.mode === 'pomodoro' ? s.phase : s.mode} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="mb-2 text-[clamp(0.75rem,2.2vmin,1.25rem)] uppercase tracking-[0.3em] text-muted">
                 {done ? "Time's up" : s.mode === 'pomodoro' ? POMO[s.phase].label : s.mode === 'stopwatch' ? 'Stopwatch' : 'Countdown'}
               </motion.p>
             </AnimatePresence>
