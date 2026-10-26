@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
-// GitHub Pages serves project sites from /<repo>/; the deploy workflow sets BASE_PATH.
+// GitHub/GitLab Pages serve project sites from /<repo>/; the CI pipelines set BASE_PATH.
 const base = process.env.BASE_PATH || '/'
 
 export default defineConfig({

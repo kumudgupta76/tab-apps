@@ -24,6 +24,10 @@ Open on the tablet and use **Add to Home Screen / Install app** for true full sc
 2. In the repo: **Settings → Pages → Source: GitHub Actions**.
 3. The site is published at `https://<user>.github.io/<repo>/`. The base path is set automatically through `BASE_PATH`.
 
+## Deploy (GitLab Pages)
+
+`.gitlab-ci.yml` builds with Node 22 and publishes `dist/` on every push to the default branch. `BASE_PATH` comes from `CI_PAGES_URL`, so the site works both at `https://<user>.gitlab.io/<repo>/` and on a unique Pages domain.
+
 ## PWA
 
 Installable and works offline (vite-plugin-pwa, auto-update service worker). Icons in `public/` are generated from `public/icon.svg`. After changing the SVG, regenerate them with `npm run generate-pwa-assets`.

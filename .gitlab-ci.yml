@@ -1,10 +1,21 @@
-# The Docker image that will be used to build your app
-image: node:lst
+# Builds the Vite PWA and deploys it to GitLab Pages.
+image: node:22
+
 create-pages:
+  stage: deploy
+  cache:
+    key:
+      files: [package-lock.json]
+    paths: [.npm/]
+  script:
+    # Serve from the Pages URL path (/tab-apps/), or / when a unique domain is enabled.
+    - export BASE_PATH="$(echo "$CI_PAGES_URL" | sed -E 's#^https?://[^/]+##')/"
+    - echo "BASE_PATH=$BASE_PATH"
+    - npm ci --cache .npm --prefer-offline
+    - npm run build
   pages:
-    # The folder that contains the files to be exposed at the Page URL
-    publish: public
+    # Vite outputs to dist/ (public/ holds source assets)
+    publish: dist
   rules:
-    # This ensures that only pushes to the default branch will trigger
-    # a pages deploy
+    # Only pushes to the default branch trigger a Pages deploy
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
