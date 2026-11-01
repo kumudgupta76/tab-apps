@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { format, isToday } from 'date-fns'
-import { Maximize, Minimize, Palette } from 'lucide-react'
+import { Maximize, Minimize, Settings } from 'lucide-react'
+import { RefreshThemeButton } from './ThemePicker'
 import { APPS } from '../apps/registry'
 import type { AppId } from '../lib/store'
 import { useData, useUi } from '../lib/store'
@@ -88,19 +89,20 @@ export function Launcher({ onOpen, dimmed, theme }: { onOpen: (id: AppId, o: Ori
               className="flex items-baseline text-left"
               aria-label="Open full-screen clock"
             >
-              <RollingText text={format(now, 'HH:mm')} className="text-gradient text-[clamp(3.5rem,14vmin,10rem)] font-extralight leading-none tracking-tight" />
+              <RollingText text={format(now, 'HH:mm')} gradient className="text-[clamp(3.5rem,14vmin,10rem)] font-extralight leading-none tracking-tight" />
               {showSeconds && <RollingText text={format(now, 'ss')} className="ml-2 text-[clamp(1.5rem,6vmin,4.5rem)] font-extralight leading-none text-muted" />}
             </motion.button>
           </motion.div>
           <div className="flex shrink-0 gap-2 sm:gap-3">
             <BatteryIndicator />
+            <RefreshThemeButton className="glass hidden h-14 w-14 place-items-center rounded-full sm:grid" />
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={() => useUi.getState().setThemePicker(true)}
               className="glass flex h-11 min-w-11 items-center justify-center gap-2 rounded-full px-3 text-lg sm:h-14 sm:px-5"
-              aria-label="Themes"
+              aria-label="Settings"
             >
-              <Palette size={22} />
+              <Settings size={22} />
               <span className="hidden md:inline">
                 {theme.emoji} {theme.name}
                 {themeMode === 'daily' && <span className="text-muted"> · today</span>}

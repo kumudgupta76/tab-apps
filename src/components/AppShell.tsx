@@ -1,6 +1,7 @@
 import { type MouseEvent, type TouchEvent, useCallback, useEffect, useRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { House, Maximize, Minimize, Palette } from 'lucide-react'
+import { House, Maximize, Minimize, Settings } from 'lucide-react'
+import { RefreshThemeButton } from './ThemePicker'
 import { APPS } from '../apps/registry'
 import type { AppId } from '../lib/store'
 import { useUi } from '../lib/store'
@@ -135,8 +136,9 @@ export function AppShell({ id, origin, onClose, onSwitch }: { id: AppId; origin:
 
         <div className="flex flex-1 basis-0 justify-end gap-2 sm:gap-3">
           <BatteryIndicator />
-          <motion.button whileTap={{ scale: 0.9 }} onClick={() => useUi.getState().setThemePicker(true)} className={btn} aria-label="Themes">
-            <Palette className="h-5 w-5 sm:h-[22px] sm:w-[22px]" />
+          <RefreshThemeButton className={`${btn} hidden sm:grid`} />
+          <motion.button whileTap={{ scale: 0.9 }} onClick={() => useUi.getState().setThemePicker(true)} className={btn} aria-label="Settings">
+            <Settings className="h-5 w-5 sm:h-[22px] sm:w-[22px]" />
           </motion.button>
           {supported && (
             <motion.button whileTap={{ scale: 0.9 }} onClick={toggle} className={`${btn} hidden sm:grid`} aria-label="Toggle full screen">

@@ -1,13 +1,61 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { Check, Sparkles } from 'lucide-react'
+import { Check, RefreshCw, Sparkles } from 'lucide-react'
+import { useState } from 'react'
 import { THEMES, themeForDate } from '../lib/themes'
 import { useData, useUi } from '../lib/store'
+import { useActiveTheme } from '../lib/hooks'
 
+/** Switches to a random theme other than the current one. */
+export function useRefreshTheme() {
+  const current = useActiveTheme()
+  const [spins, setSpins] = useState(0)
+  const refresh = () => {
+    const others = THEMES.filter((t) => t.id !== current.id)
+    useData.getState().setThemeMode(others[Math.floor(Math.random() * others.length)].id)
+    setSpins((s) => s + 1)
+  }
+  return { refresh, spins }
+}
+
+export function RefreshThemeButton({ className = '' }: { className?: string }) {
+  const { refresh, spins } = useRefreshTheme()
+  return (
+    <motion.button whileTap={{ scale: 0.9 }} onClick={refresh} className={className} aria-label="New theme" title="New theme">
+      <motion.span className="grid place-items-center" animate={{ rotate: spins * 360 }} transition={{ type: 'spring', stiffness: 120, damping: 14 }}>
+        <RefreshCw className="h-5 w-5 sm:h-[22px] sm:w-[22px]" />
+      </motion.span>
+    </motion.button>
+  )
+}
+
+function Toggle({ label, on, onChange }: { label: string; on: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <motion.button
+      whileTap={{ scale: 0.98 }}
+      onClick={() => onChange(!on)}
+      role="switch"
+      aria-checked={on}
+      className="glass flex w-full items-center justify-between gap-4 rounded-3xl px-5 py-4 text-left text-lg"
+    >
+      {label}
+      <span className={`relative h-8 w-14 shrink-0 rounded-full transition-colors ${on ? 'btn-accent' : 'bg-fg/20'}`}>
+        <motion.span
+          className="absolute top-1 h-6 w-6 rounded-full bg-white shadow"
+          animate={{ left: on ? 28 : 4 }}
+          transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+        />
+      </span>
+    </motion.button>
+  )
+}
+
+/** Settings sheet: display options and themes. */
 export function ThemePicker() {
   const open = useUi((s) => s.themePickerOpen)
   const close = () => useUi.getState().setThemePicker(false)
-  const { themeMode, setThemeMode } = useData()
+  const { themeMode, setThemeMode, showSeconds, setShowSeconds } = useData()
   const todays = themeForDate(new Date())
+  const { refresh, spins } = useRefreshTheme()
 
   return (
     <AnimatePresence>
@@ -32,8 +80,23 @@ export function ThemePicker() {
             onDragEnd={(_, i) => (i.offset.y > 120 || i.velocity.y > 600) && close()}
           >
             <div className="mx-auto mb-6 h-1.5 w-14 rounded-full bg-fg/25" />
-            <h2 className="mb-1 text-3xl font-semibold">Themes</h2>
-            <p className="mb-6 text-muted">Pick one, or let TabDesk surprise you with a new theme every day.</p>
+            <h2 className="mb-6 text-3xl font-semibold">Settings</h2>
+
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-muted">Clock</h3>
+            <div className="mb-8">
+              <Toggle label="Show seconds" on={showSeconds} onChange={setShowSeconds} />
+            </div>
+
+            <div className="mb-3 flex items-center justify-between gap-4">
+              <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-muted">Themes</h3>
+              <motion.button whileTap={{ scale: 0.94 }} onClick={refresh} className="btn-accent flex items-center gap-2 rounded-full px-4 py-2 font-semibold">
+                <motion.span animate={{ rotate: spins * 360 }} transition={{ type: 'spring', stiffness: 120, damping: 14 }} className="grid place-items-center">
+                  <RefreshCw size={18} />
+                </motion.span>
+                New theme
+              </motion.button>
+            </div>
+            <p className="mb-4 text-muted">Pick one, or let TabDesk surprise you with a new theme every day.</p>
 
             <motion.button
               whileTap={{ scale: 0.97 }}
