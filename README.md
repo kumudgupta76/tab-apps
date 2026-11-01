@@ -4,7 +4,7 @@ Full-screen, animated tablet tools: **Clock** (default view), **Timer** (countdo
 
 - Swipe left/right (or ←/→ keys, or tap the page dots) to switch views; Esc or the home button opens the launcher.
 - Small battery readout in the header. It's hidden where the browser can't report the real level: no Battery API (iOS Safari, Firefox), or privacy browsers that always report "100%, charging".
-- Gear button opens Settings: show seconds, full screen, themes and "New theme" (random theme).
+- Top-right: Settings (show seconds, themes, "New theme" for a random theme) and the full-screen button in the corner.
 - Responsive from phones (portrait and landscape) up to tablets.
 
 ## Run

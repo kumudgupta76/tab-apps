@@ -1,10 +1,10 @@
 import { motion } from 'framer-motion'
 import { format, isToday } from 'date-fns'
-import { Settings } from 'lucide-react'
+import { Maximize, Minimize, Settings } from 'lucide-react'
 import { APPS } from '../apps/registry'
 import type { AppId } from '../lib/store'
 import { useData, useUi } from '../lib/store'
-import { isStandalone, useNow } from '../lib/hooks'
+import { isStandalone, useFullscreen, useNow } from '../lib/hooks'
 import type { Theme } from '../lib/themes'
 import { durationOf, elapsedOf, formatMs, POMO, useTimer } from '../lib/timer'
 import { RollingText } from './RollingText'
@@ -65,6 +65,7 @@ const CARD_APPS = APPS.filter((a) => PREVIEWS[a.id])
 
 export function Launcher({ onOpen, dimmed, theme }: { onOpen: (id: AppId, o: Origin) => void; dimmed: boolean; theme: Theme }) {
   const now = new Date(useNow(1000))
+  const { isFullscreen, toggle, supported } = useFullscreen()
   const themeMode = useData((s) => s.themeMode)
   const showSeconds = useData((s) => s.showSeconds)
 
@@ -102,6 +103,16 @@ export function Launcher({ onOpen, dimmed, theme }: { onOpen: (id: AppId, o: Ori
             >
               <Settings className="h-5 w-5 sm:h-6 sm:w-6" />
             </motion.button>
+            {supported && (
+              <motion.button
+                whileTap={{ scale: 0.9 }}
+                onClick={toggle}
+                className="grid h-11 w-11 place-items-center rounded-full text-fg/80 transition-colors hover:bg-fg/10 active:bg-fg/15 sm:h-12 sm:w-12"
+                aria-label="Toggle full screen"
+              >
+                {isFullscreen ? <Minimize className="h-5 w-5 sm:h-6 sm:w-6" /> : <Maximize className="h-5 w-5 sm:h-6 sm:w-6" />}
+              </motion.button>
+            )}
           </div>
         </header>
 

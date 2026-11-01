@@ -3,7 +3,7 @@ import { Check, RefreshCw, Sparkles } from 'lucide-react'
 import { useState } from 'react'
 import { THEMES, themeForDate } from '../lib/themes'
 import { useData, useUi } from '../lib/store'
-import { useActiveTheme, useFullscreen } from '../lib/hooks'
+import { useActiveTheme } from '../lib/hooks'
 
 /** Switches to a random theme other than the current one. */
 export function useRefreshTheme() {
@@ -45,7 +45,6 @@ export function ThemePicker() {
   const { themeMode, setThemeMode, showSeconds, setShowSeconds } = useData()
   const todays = themeForDate(new Date())
   const { refresh, spins } = useRefreshTheme()
-  const fs = useFullscreen()
 
   return (
     <AnimatePresence>
@@ -73,9 +72,8 @@ export function ThemePicker() {
             <h2 className="mb-6 text-3xl font-semibold">Settings</h2>
 
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-muted">Display</h3>
-            <div className="mb-8 flex flex-col gap-3">
+            <div className="mb-8">
               <Toggle label="Show seconds" on={showSeconds} onChange={setShowSeconds} />
-              {fs.supported && <Toggle label="Full screen" on={fs.isFullscreen} onChange={fs.toggle} />}
             </div>
 
             <div className="mb-3 flex items-center justify-between gap-4">

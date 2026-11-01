@@ -1,6 +1,7 @@
 import { type MouseEvent, type TouchEvent, useCallback, useEffect, useRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { House, Settings } from 'lucide-react'
+import { House, Maximize, Minimize, Settings } from 'lucide-react'
+import { useFullscreen } from '../lib/hooks'
 import { APPS } from '../apps/registry'
 import type { AppId } from '../lib/store'
 import { useUi } from '../lib/store'
@@ -78,6 +79,7 @@ export function AppShell({ id, origin, onClose, onSwitch }: { id: AppId; origin:
     },
   }
 
+  const { isFullscreen, toggle, supported } = useFullscreen()
   const app = APPS[idx]
   const at = `${origin.x}px ${origin.y}px`
 
@@ -136,6 +138,11 @@ export function AppShell({ id, origin, onClose, onSwitch }: { id: AppId; origin:
           <motion.button whileTap={{ scale: 0.9 }} onClick={() => useUi.getState().setThemePicker(true)} className={btn} aria-label="Settings">
             <Settings className="h-5 w-5 sm:h-6 sm:w-6" />
           </motion.button>
+          {supported && (
+            <motion.button whileTap={{ scale: 0.9 }} onClick={toggle} className={btn} aria-label="Toggle full screen">
+              {isFullscreen ? <Minimize className="h-5 w-5 sm:h-6 sm:w-6" /> : <Maximize className="h-5 w-5 sm:h-6 sm:w-6" />}
+            </motion.button>
+          )}
         </div>
       </header>
 
