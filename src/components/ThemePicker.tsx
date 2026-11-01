@@ -3,7 +3,7 @@ import { Check, RefreshCw, Sparkles } from 'lucide-react'
 import { useState } from 'react'
 import { THEMES, themeForDate } from '../lib/themes'
 import { useData, useUi } from '../lib/store'
-import { useActiveTheme } from '../lib/hooks'
+import { useActiveTheme, useFullscreen } from '../lib/hooks'
 
 /** Switches to a random theme other than the current one. */
 export function useRefreshTheme() {
@@ -15,17 +15,6 @@ export function useRefreshTheme() {
     setSpins((s) => s + 1)
   }
   return { refresh, spins }
-}
-
-export function RefreshThemeButton({ className = '' }: { className?: string }) {
-  const { refresh, spins } = useRefreshTheme()
-  return (
-    <motion.button whileTap={{ scale: 0.9 }} onClick={refresh} className={className} aria-label="New theme" title="New theme">
-      <motion.span className="grid place-items-center" animate={{ rotate: spins * 360 }} transition={{ type: 'spring', stiffness: 120, damping: 14 }}>
-        <RefreshCw className="h-5 w-5 sm:h-[22px] sm:w-[22px]" />
-      </motion.span>
-    </motion.button>
-  )
 }
 
 function Toggle({ label, on, onChange }: { label: string; on: boolean; onChange: (v: boolean) => void }) {
@@ -56,6 +45,7 @@ export function ThemePicker() {
   const { themeMode, setThemeMode, showSeconds, setShowSeconds } = useData()
   const todays = themeForDate(new Date())
   const { refresh, spins } = useRefreshTheme()
+  const fs = useFullscreen()
 
   return (
     <AnimatePresence>
@@ -82,9 +72,10 @@ export function ThemePicker() {
             <div className="mx-auto mb-6 h-1.5 w-14 rounded-full bg-fg/25" />
             <h2 className="mb-6 text-3xl font-semibold">Settings</h2>
 
-            <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-muted">Clock</h3>
-            <div className="mb-8">
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-muted">Display</h3>
+            <div className="mb-8 flex flex-col gap-3">
               <Toggle label="Show seconds" on={showSeconds} onChange={setShowSeconds} />
+              {fs.supported && <Toggle label="Full screen" on={fs.isFullscreen} onChange={fs.toggle} />}
             </div>
 
             <div className="mb-3 flex items-center justify-between gap-4">

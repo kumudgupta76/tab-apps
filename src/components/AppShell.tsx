@@ -1,11 +1,9 @@
 import { type MouseEvent, type TouchEvent, useCallback, useEffect, useRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { House, Maximize, Minimize, Settings } from 'lucide-react'
-import { RefreshThemeButton } from './ThemePicker'
+import { House, Settings } from 'lucide-react'
 import { APPS } from '../apps/registry'
 import type { AppId } from '../lib/store'
 import { useUi } from '../lib/store'
-import { useFullscreen } from '../lib/hooks'
 import type { Origin } from './Launcher'
 import { BatteryIndicator } from './Battery'
 
@@ -21,7 +19,7 @@ const slide = {
 /** Elements with their own horizontal gestures (or text entry) opt out with data-noswipe. */
 const ignores = (t: EventTarget | null) => !!(t as HTMLElement | null)?.closest?.('[data-noswipe], input, textarea, select')
 
-const btn = 'glass grid h-11 w-11 place-items-center rounded-full sm:h-14 sm:w-14'
+const btn = 'grid h-11 w-11 place-items-center rounded-full text-fg/80 transition-colors hover:bg-fg/10 active:bg-fg/15 sm:h-12 sm:w-12'
 
 export function AppShell({ id, origin, onClose, onSwitch }: { id: AppId; origin: Origin; onClose: () => void; onSwitch: (id: AppId) => void }) {
   const idx = APPS.findIndex((a) => a.id === id)
@@ -80,7 +78,6 @@ export function AppShell({ id, origin, onClose, onSwitch }: { id: AppId; origin:
     },
   }
 
-  const { isFullscreen, toggle, supported } = useFullscreen()
   const app = APPS[idx]
   const at = `${origin.x}px ${origin.y}px`
 
@@ -108,9 +105,9 @@ export function AppShell({ id, origin, onClose, onSwitch }: { id: AppId; origin:
               initial={{ y: 12, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -12, opacity: 0 }}
-              className="flex items-center gap-2 truncate text-xl font-semibold sm:gap-3 sm:text-3xl"
+              className="flex items-center gap-2 truncate text-lg font-semibold sm:text-2xl"
             >
-              <app.icon className="h-6 w-6 shrink-0 text-accent sm:h-8 sm:w-8" />
+              <app.icon className="h-5 w-5 shrink-0 text-accent sm:h-6 sm:w-6" />
               {app.name}
             </motion.h1>
           </AnimatePresence>
@@ -134,17 +131,11 @@ export function AppShell({ id, origin, onClose, onSwitch }: { id: AppId; origin:
           </div>
         </div>
 
-        <div className="flex flex-1 basis-0 justify-end gap-2 sm:gap-3">
-          <BatteryIndicator />
-          <RefreshThemeButton className={`${btn} hidden sm:grid`} />
+        <div className="flex flex-1 basis-0 items-center justify-end gap-1 sm:gap-2">
+          <BatteryIndicator className="hidden min-[420px]:flex" />
           <motion.button whileTap={{ scale: 0.9 }} onClick={() => useUi.getState().setThemePicker(true)} className={btn} aria-label="Settings">
-            <Settings className="h-5 w-5 sm:h-[22px] sm:w-[22px]" />
+            <Settings className="h-5 w-5 sm:h-6 sm:w-6" />
           </motion.button>
-          {supported && (
-            <motion.button whileTap={{ scale: 0.9 }} onClick={toggle} className={`${btn} hidden sm:grid`} aria-label="Toggle full screen">
-              {isFullscreen ? <Minimize size={22} /> : <Maximize size={22} />}
-            </motion.button>
-          )}
         </div>
       </header>
 

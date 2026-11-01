@@ -1,11 +1,10 @@
 import { motion } from 'framer-motion'
 import { format, isToday } from 'date-fns'
-import { Maximize, Minimize, Settings } from 'lucide-react'
-import { RefreshThemeButton } from './ThemePicker'
+import { Settings } from 'lucide-react'
 import { APPS } from '../apps/registry'
 import type { AppId } from '../lib/store'
 import { useData, useUi } from '../lib/store'
-import { isStandalone, useFullscreen, useNow } from '../lib/hooks'
+import { isStandalone, useNow } from '../lib/hooks'
 import type { Theme } from '../lib/themes'
 import { durationOf, elapsedOf, formatMs, POMO, useTimer } from '../lib/timer'
 import { RollingText } from './RollingText'
@@ -66,7 +65,6 @@ const CARD_APPS = APPS.filter((a) => PREVIEWS[a.id])
 
 export function Launcher({ onOpen, dimmed, theme }: { onOpen: (id: AppId, o: Origin) => void; dimmed: boolean; theme: Theme }) {
   const now = new Date(useNow(1000))
-  const { isFullscreen, toggle, supported } = useFullscreen()
   const themeMode = useData((s) => s.themeMode)
   const showSeconds = useData((s) => s.showSeconds)
 
@@ -93,26 +91,17 @@ export function Launcher({ onOpen, dimmed, theme }: { onOpen: (id: AppId, o: Ori
               {showSeconds && <RollingText text={format(now, 'ss')} className="ml-2 text-[clamp(1.5rem,6vmin,4.5rem)] font-extralight leading-none text-muted" />}
             </motion.button>
           </motion.div>
-          <div className="flex shrink-0 gap-2 sm:gap-3">
+          <div className="flex shrink-0 items-center gap-1 sm:gap-2">
             <BatteryIndicator />
-            <RefreshThemeButton className="glass hidden h-14 w-14 place-items-center rounded-full sm:grid" />
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={() => useUi.getState().setThemePicker(true)}
-              className="glass flex h-11 min-w-11 items-center justify-center gap-2 rounded-full px-3 text-lg sm:h-14 sm:px-5"
+              className="grid h-11 w-11 place-items-center rounded-full text-fg/80 transition-colors hover:bg-fg/10 active:bg-fg/15 sm:h-12 sm:w-12"
               aria-label="Settings"
+              title={`Settings · ${theme.name}${themeMode === 'daily' ? ' (today)' : ''}`}
             >
-              <Settings size={22} />
-              <span className="hidden md:inline">
-                {theme.emoji} {theme.name}
-                {themeMode === 'daily' && <span className="text-muted"> · today</span>}
-              </span>
+              <Settings className="h-5 w-5 sm:h-6 sm:w-6" />
             </motion.button>
-            {supported && (
-              <motion.button whileTap={{ scale: 0.9 }} onClick={toggle} className="glass hidden h-14 w-14 place-items-center rounded-full sm:grid" aria-label="Toggle full screen">
-                {isFullscreen ? <Minimize size={22} /> : <Maximize size={22} />}
-              </motion.button>
-            )}
           </div>
         </header>
 

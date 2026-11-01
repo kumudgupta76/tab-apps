@@ -3,8 +3,8 @@
 Full-screen, animated tablet tools: **Clock** (default view), **Timer** (countdown / stopwatch / pomodoro), **Calendar** and **To-do**, with a new theme every day.
 
 - Swipe left/right (or ←/→ keys, or tap the page dots) to switch views; Esc or the home button opens the launcher.
-- Battery indicator in the header (Chromium browsers only; hidden where the Battery API is unavailable, e.g. iOS Safari/Firefox).
-- Gear button opens Settings (show seconds, themes); the refresh button / "New theme" picks a random theme.
+- Small battery readout in the header. It's hidden where the browser can't report the real level: no Battery API (iOS Safari, Firefox), or privacy browsers that always report "100%, charging".
+- Gear button opens Settings: show seconds, full screen, themes and "New theme" (random theme).
 - Responsive from phones (portrait and landscape) up to tablets.
 
 ## Run
